@@ -1,7 +1,7 @@
 package de.patricksteinert.recognizer;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.bytedeco.opencv.opencv_core.IplImage;
-import org.opencv.core.Mat;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -11,6 +11,12 @@ import java.util.List;
 import static org.bytedeco.opencv.helper.opencv_imgcodecs.cvSaveImage;
 
 /**
+ * Main class of the application.
+ *
+ * Recognizer initializes the components of the application.
+ *
+ * @author Patrick Steinert
+ * @since 1.0
  * Created by Patrick Steinert on 21.06.21.
  */
 public class Recognizer implements PropertyChangeListener {
@@ -29,7 +35,17 @@ public class Recognizer implements PropertyChangeListener {
         recognition = new FakeRecognition();
 
         preprocessor = new Preprocessor();
-        webcamReader = new WebcamReader();
+
+        if (SystemUtils.IS_OS_LINUX) {
+            System.out.println("Detected Linux os, setup GSTREAMER based webcam");
+            webcamReader = new RaspberryPiWebcamReader();
+        } else {
+            System.out.println("Detected non Linux os, use default webcam");
+            webcamReader = new GenericWebcamReader();
+
+        }
+
+
         w = new WeightChecker();
         w.addPropertyChangeListener(this);
         w.run();

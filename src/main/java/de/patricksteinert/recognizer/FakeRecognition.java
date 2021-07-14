@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * FakeRecognition can be used for testing purposes.
+ *
+ * @author Patrick Steinert
+ * @sinve 1.0
  * Created by Patrick Steinert on 21.06.21.
  */
 public class FakeRecognition implements Recognition {
