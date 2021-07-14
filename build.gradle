@@ -13,6 +13,7 @@ targetCompatibility = 11
 mainClassName = "de.patricksteinert.recognizer.Recognizer"
 
 jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes "Main-Class": "$mainClassName"
     }
