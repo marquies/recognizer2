@@ -1,20 +1,13 @@
 package de.patricksteinert.recognizer;
 
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.FrameGrabber;
-import org.bytedeco.javacv.OpenCVFrameConverter;
-import org.bytedeco.javacv.OpenCVFrameGrabber;
 import org.bytedeco.opencv.opencv_core.IplImage;
 import org.bytedeco.opencv.opencv_core.Mat;
-import org.bytedeco.opencv.opencv_core.Size;
-import org.bytedeco.opencv.opencv_videoio.VideoCapture;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-import static org.bytedeco.opencv.global.opencv_core.cvFlip;
-import static org.bytedeco.opencv.global.opencv_videoio.CAP_GSTREAMER;
-import static org.bytedeco.opencv.helper.opencv_imgcodecs.cvSaveImage;
-import static org.opencv.core.CvType.CV_8UC3;
+import static org.bytedeco.opencv.global.opencv_imgcodecs.imread;
 
 /**
  * Created by Patrick Steinert on 30.06.21.
@@ -31,54 +24,93 @@ public class RaspberryPiWebcamReader implements WebcamReader {
 
     @Override
     public IplImage readImage() {
-        new File("images").mkdir();
-        //BytePointer ptr = new BytePointer(GSTREAMER_PIPELINE);
-        System.out.println(GSTREAMER_PIPELINE);
-        VideoCapture vc = new VideoCapture(GSTREAMER_PIPELINE, CAP_GSTREAMER);
-        System.out.println("Exception Mode: " + vc.getExceptionMode());
-        vc.setExceptionMode(true);
-        System.out.println("Exception Mode: " + vc.getExceptionMode());
+//        new File("images").mkdir();
+//        //BytePointer ptr = new BytePointer(GSTREAMER_PIPELINE);
+//        System.out.println(GSTREAMER_PIPELINE);
+//        VideoCapture vc = new VideoCapture(GSTREAMER_PIPELINE, CAP_GSTREAMER);
+//        System.out.println("Exception Mode: " + vc.getExceptionMode());
+//        vc.setExceptionMode(true);
+//        System.out.println("Exception Mode: " + vc.getExceptionMode());
+//
+//        if (!vc.isOpened()) {
+//            System.out.println("VideoCapture not opened!");
+//        }
+//        boolean retVal = vc.open(GSTREAMER_PIPELINE, CAP_GSTREAMER);
+//        System.out.println("Open Return Value: " + retVal);
+//        System.out.println("Backend Name: " + vc.getBackendName());
+//
+//        Mat vcimg = new Mat(new Size(960, 616), CV_8UC3);
+//        boolean ok = vc.read(vcimg);
+//        if (ok) {
+//            System.out.println("Read OK");
+//        }
+//
+//        imwrite("images" + File.separator + (0) + "-ab.jpg", vcimg);
+//
+//
+//        FrameGrabber grabber = new OpenCVFrameGrabber(GSTREAMER_PIPELINE); // 1 for next camera
+//        OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage();
+//        IplImage img;
+//        int i = 0;
+//        try {
+//            grabber.start();
+//
+//            Frame frame = grabber.grab();
+//
+//            img = converter.convert(frame);
+//
+//            //the grabbed frame will be flipped, re-flip to make it right
+//            cvFlip(img, img, 1);// l-r = 90_degrees_steps_anti_clockwise
+//
+//            //save
+//            cvSaveImage("images" + File.separator + (0) + "-aa.jpg", img);
+//
+//            //canvas.showImage(converter.convert(img));
+//
+//            return img;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-        if (!vc.isOpened()) {
-            System.out.println("VideoCapture not opened!");
-        }
-        boolean retVal = vc.open(GSTREAMER_PIPELINE, CAP_GSTREAMER);
-        System.out.println("Open Return Value: " + retVal);
-        System.out.println("Backend Name: " + vc.getBackendName());
-
-        Mat vcimg = new Mat(new Size(960, 616), CV_8UC3);
-        boolean ok = vc.read(vcimg);
-        if (ok) {
-            System.out.println("Read OK");
-        }
-
-        //imwrite("images" + File.separator + (0) + "-ab.jpg", vcimg);
-
-
-        FrameGrabber grabber = new OpenCVFrameGrabber(GSTREAMER_PIPELINE); // 1 for next camera
-        OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage();
-        IplImage img;
-        int i = 0;
         try {
-            grabber.start();
-
-            Frame frame = grabber.grab();
-
-            img = converter.convert(frame);
-
-            //the grabbed frame will be flipped, re-flip to make it right
-            cvFlip(img, img, 1);// l-r = 90_degrees_steps_anti_clockwise
-
-            //save
-            cvSaveImage("images" + File.separator + (0) + "-aa.jpg", img);
-
-            //canvas.showImage(converter.convert(img));
-
+            pythonExecution();
+            Mat image = imread("/tmp/image.jpg");
+            IplImage img = new IplImage(image);
             return img;
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
+
+    public void pythonExecution() throws Exception {
+        String s = null;
+
+        try {
+
+            // run the Unix "ps -ef" command
+            // using the Runtime exec method:
+            Process p = Runtime.getRuntime().exec("listcams.py");
+
+            BufferedReader stdInput = new BufferedReader(new
+                    InputStreamReader(p.getInputStream()));
+
+            BufferedReader stdError = new BufferedReader(new
+                    InputStreamReader(p.getErrorStream()));
+
+            // read the output from the command
+            System.out.println("Here is the standard output of the command:\n");
+            while ((s = stdInput.readLine()) != null) {
+                System.out.println(s);
+            }
+
+        } catch (IOException e) {
+            System.out.println("exception happened - here's what I know: ");
+            e.printStackTrace();
+            System.exit(-1);
+        }
+    }
+
 }
