@@ -67,7 +67,7 @@ public class Recognizer implements PropertyChangeListener {
         IplImage img = webcamReader.readImage();
         IplImage preparedImg = preprocessor.preprocess(img);
 
-        cvSaveImage("images" + File.separator + (2) + "-aa.jpg", preparedImg);
+        cvSaveImage("./images" + File.separator + (2) + "-aa.jpg", preparedImg);
 
         List<Result> results = recognition.recognize(preparedImg);
         for (Result result : results) {
