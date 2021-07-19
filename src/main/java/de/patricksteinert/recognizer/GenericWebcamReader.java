@@ -13,10 +13,11 @@ import static org.bytedeco.opencv.helper.opencv_imgcodecs.cvSaveImage;
  */
 public class GenericWebcamReader implements WebcamReader {
     final int INTERVAL = 100;///you may use interval
-    CanvasFrame canvas = new CanvasFrame("Web Cam");
+//    CanvasFrame canvas = new CanvasFrame("Web Cam");
 
     public GenericWebcamReader() {
-        canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+
+//        canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
     }
 
     @Override

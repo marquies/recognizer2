@@ -1,5 +1,7 @@
 package de.patricksteinert.recognizer;
 
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.opencv.opencv_core.IplImage;
 import org.bytedeco.opencv.opencv_core.Mat;
 
@@ -76,7 +78,17 @@ public class RaspberryPiWebcamReader implements WebcamReader {
         try {
             pythonExecution();
             Mat image = imread("/tmp/image.jpg");
-            IplImage img = new IplImage(image);
+            if (image.isNull() ) {
+                System.out.println("Image is null");
+            }
+
+            OpenCVFrameConverter.ToMat  matConverter = new OpenCVFrameConverter.ToMat();
+            Frame frame =  matConverter.convert(image);
+
+            OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage();
+
+            IplImage img = converter.convert(frame);
+//            IplImage img = new IplImage(image);
             return img;
         } catch (Exception e) {
             e.printStackTrace();
