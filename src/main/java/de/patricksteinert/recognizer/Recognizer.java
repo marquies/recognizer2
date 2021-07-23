@@ -32,7 +32,8 @@ public class Recognizer implements PropertyChangeListener {
 
         display = new Display();
         
-        recognition = new FakeRecognition();
+//        recognition = new FakeRecognition();
+        recognition = new SampleRecognition();
 
         preprocessor = new Preprocessor();
 

@@ -1,7 +1,11 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.5'
+    //id 'maven-publish'
 }
+apply plugin: "maven"
+
 
 group 'org.example'
 version '1.0-SNAPSHOT'
@@ -23,6 +27,10 @@ jar {
     }
 }
 
+javafx {
+    version = "11"
+    modules = [ 'javafx.controls' ]
+}
 
 repositories {
     mavenCentral()
@@ -31,6 +39,8 @@ repositories {
 dependencies {
     implementation group: 'org.bytedeco', name: 'javacv-platform', version: '1.5.5'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    implementation 'org.tensorflow:tensorflow:1.12.0'
+
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
