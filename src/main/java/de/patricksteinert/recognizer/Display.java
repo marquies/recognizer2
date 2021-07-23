@@ -1,6 +1,8 @@
 package de.patricksteinert.recognizer;
 
 /**
+ *
+ *
  * Created by Patrick Steinert on 21.06.21.
  */
 public class Display {
