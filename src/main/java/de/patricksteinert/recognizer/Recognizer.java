@@ -40,7 +40,8 @@ public class Recognizer implements PropertyChangeListener {
 
         // Fake recognition is used for development purposes.
         //recognition = new FakeRecognition();
-        recognition = new SampleRecognition();
+        //recognition = new SampleRecognition();
+        recognition = new YoloRecognition();
 
         preprocessor = new Preprocessor();
 
