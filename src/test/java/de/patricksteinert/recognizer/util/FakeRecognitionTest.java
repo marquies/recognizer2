@@ -1,6 +1,7 @@
 package de.patricksteinert.recognizer.util;
 
 import de.patricksteinert.recognizer.Result;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -13,8 +14,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  */
 public class FakeRecognitionTest {
 
+    /**
+     * Simple test for the default values.
+     */
     @Test
-    public void testRecignition() {
+    public void testRecognition() {
         FakeRecognition fakeRecognition = new FakeRecognition();
         List<Result> result = fakeRecognition.recognize(null);
 

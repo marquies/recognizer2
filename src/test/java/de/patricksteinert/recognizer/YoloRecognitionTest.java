@@ -1,5 +1,6 @@
 package de.patricksteinert.recognizer;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
  */
 public class YoloRecognitionTest {
     @Test
+    @Disabled // Just works on local machine with model in place
     public void testYoloRecognitionExecution() {
         YoloRecognition yr = new YoloRecognition();
         yr.executePythonInference();
