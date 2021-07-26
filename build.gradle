@@ -2,9 +2,10 @@ plugins {
     id 'java'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.5'
-    //id 'maven-publish'
+    id 'maven-publish'
 }
-apply plugin: "maven"
+
+//apply plugin: "maven"
 
 
 group 'org.example'
