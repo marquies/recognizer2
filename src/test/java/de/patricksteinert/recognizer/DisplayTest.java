@@ -25,18 +25,25 @@ public class DisplayTest {
         System.setErr(new PrintStream(errContent));
     }
 
-    @AfterEach
-    public void restoreStreams() {
-        System.setOut(originalOut);
-        System.setErr(originalErr);
-    }
+    @Test
+    public void testDisplay() {
+        Display display = new Display();
+        display.showText("Hello!");
 
+        assertEquals("Hello!", outContent.toString().trim());
+    }
     @Test
     public void testMultiline() {
         Display display = new Display();
         display.showMultiline("Hello", "World!");
 
         assertEquals("Hello\nWorld!", outContent.toString().trim());
+    }
+
+    @AfterEach
+    public void restoreStreams() {
+        System.setOut(originalOut);
+        System.setErr(originalErr);
     }
 
 }
