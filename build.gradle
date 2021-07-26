@@ -1,14 +1,15 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.5'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
     id 'maven-publish'
 }
 
 //apply plugin: "maven"
 
 
-group 'org.example'
+group 'de.patricksteinert'
+name 'recognizer2'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 11
@@ -41,14 +42,6 @@ dependencies {
     implementation group: 'org.bytedeco', name: 'javacv-platform', version: '1.5.5'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
     implementation 'org.tensorflow:tensorflow:1.12.0'
-    //implementation group: 'org.tensorflow', name: 'tensorflow-core-api', version: '0.3.2'
-    //implementation group: 'org.tensorflow', name: 'tensorflow-framework', version: '0.3.2'
-    //implementation 'org.tensorflow:tensorflow-core-api:0.3.2:macosx-x86_64-1.5.5'
-    //    implementation group: 'org.bytedeco', name: moduleName + '-platform', version: moduleVersion + '-1.5.5'
-
-    //implementation group: 'org.bytedeco.javacpp-presets', name: 'tensorflow-platform', version: '0.3.2-1.5.5'
-    //implementation 'org.bytedeco.javacpp-presets:tensorflow-platform:1.4.0-1.3.4-SNAPSHOT'
-    //implementation 'org.bytedeco.javacpp-presets:tensorflow:1.4.0-1.3.4-SNAPSHOT:macosx-x86_64'
 
     implementation "org.deeplearning4j:deeplearning4j-core:1.0.0-M1.1"
     implementation "org.nd4j:nd4j-native-platform:1.0.0-M1.1"
