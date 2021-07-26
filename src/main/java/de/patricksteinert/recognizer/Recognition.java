@@ -13,6 +13,12 @@ import java.util.List;
  */
 public interface Recognition {
 
+    /**
+     * Recognition class to implement. Should do the image recognition on the image and return the found classes.
+     *
+     * @param image image to process.
+     * @return List of Result objects.
+     */
     public List<Result> recognize(IplImage image);
 
 }

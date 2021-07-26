@@ -9,9 +9,21 @@ import java.util.List;
 import java.util.Vector;
 
 /**
+ * Recognition for the YoloV3 net from a keras export.
+ * <p>
  * Created by Patrick Steinert on 23.07.21.
+ *
+ * @author Patrick Steinert.
+ * @since 1.0
  */
 public class YoloRecognition implements Recognition {
+
+    /**
+     * Process a recognition for the given image.
+     *
+     * @param image image to process.
+     * @return recognized objects.
+     */
     @Override
     public List<Result> recognize(IplImage image) {
 //        Yolov3 y = new Yolov3();

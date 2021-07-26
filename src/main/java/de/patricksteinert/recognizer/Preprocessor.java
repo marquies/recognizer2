@@ -13,15 +13,26 @@ import static org.bytedeco.opencv.global.opencv_core.addWeighted;
 import static org.bytedeco.opencv.global.opencv_imgcodecs.imwrite;
 
 /**
+ * The preprocessor optimizes an image with for object recognition with simple image processing.
+ * <p>
+ * Enhancements:
+ * <ol>
+ *     <li>Gaussian unsharpening.</li>
+ * </ol>
+ *
+ * @author Patrick Steinert
  * Created by Patrick Steinert on 21.06.21.
+ * @since 1.0
  */
 public class Preprocessor {
 
-    public Preprocessor() {
-        //System.loadLibrary( "opencv_java452");
 
-    }
-
+    /**
+     * Preprocessing.
+     *
+     * @param image image to process.
+     * @return processed image.
+     */
     public IplImage preprocess(IplImage image) {
         OpenCVFrameConverter.ToIplImage iplConverter = new OpenCVFrameConverter.ToIplImage();
 
