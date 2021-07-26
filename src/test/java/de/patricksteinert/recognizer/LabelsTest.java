@@ -26,7 +26,7 @@ public class LabelsTest {
             }
         }
 //        assertTrue(labels.get(0).equals("Person"));
-        assertEquals("person", labels.get(0));
+        assertEquals("person", labels.get(1));
     }
 
 }
