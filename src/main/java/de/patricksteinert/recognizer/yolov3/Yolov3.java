@@ -1,26 +1,16 @@
 package de.patricksteinert.recognizer.yolov3;
 
 import org.deeplearning4j.nn.graph.ComputationGraph;
-import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
-import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
-import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
 import org.tensorflow.Graph;
-import org.tensorflow.SavedModelBundle;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Patrick Steinert on 23.07.21.
@@ -28,13 +18,13 @@ import java.util.Map;
 public class Yolov3 {
     private ComputationGraph model;
 
-    public Yolov3 () {
+    public Yolov3() {
 
         //model = KerasModelImport.importKerasModelAndWeights("./yolo_v3_fruits360_2021_07_23_4/yolo_model_export.h5", false);
 
         try (Graph graph = new Graph()) {
             //graph.importGraphDef(Files.readAllBytes(Paths.get("./yolo_v3_fruits360_2021_07_23_4/saved_model/saved_model.pb")));
-            SavedModelBundle saved_model = SavedModelBundle.load("./yolo_v3_fruits360_2021_07_23_4/saved_model/", "serve");
+//            SavedModelBundle saved_model = SavedModelBundle.load("./yolo_v3_fruits360_2021_07_23_4/saved_model/", "serve");
 
         }
 
@@ -53,16 +43,16 @@ public class Yolov3 {
     }
 
 
-    public  INDArray predict (String filepath) throws IOException{
+    public INDArray predict(String filepath) throws IOException {
         File file = new File(filepath);
-        if (!file.exists()){
+        if (!file.exists()) {
             file = new File(filepath);
         }
 
         BufferedImage img = ImageIO.read(file);
         double data[] = new double[28 * 28];
-        for(int i = 0; i < 28; i++){
-            for(int j = 0; j < 28; j++){
+        for (int i = 0; i < 28; i++) {
+            for (int j = 0; j < 28; j++) {
                 Color color = new Color(img.getRGB(i, j));
                 int r = color.getRed();
                 int g = color.getGreen();
@@ -73,7 +63,7 @@ public class Yolov3 {
             }
         }
 
-        INDArray arr = Nd4j.create(data).reshape(-1, 28*28);
+        INDArray arr = Nd4j.create(data).reshape(-1, 28 * 28);
         //Map<String,INDArray> placeholder = new HashMap<>();
         //placeholder.put("input",arr);
         INDArray output = model.outputSingle(arr);
