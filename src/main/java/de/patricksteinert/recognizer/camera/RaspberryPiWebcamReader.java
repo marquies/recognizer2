@@ -1,4 +1,4 @@
-package de.patricksteinert.recognizer;
+package de.patricksteinert.recognizer.camera;
 
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.OpenCVFrameConverter;

@@ -1,5 +1,8 @@
 package de.patricksteinert.recognizer;
 
+import de.patricksteinert.recognizer.camera.GenericWebcamReader;
+import de.patricksteinert.recognizer.camera.RaspberryPiWebcamReader;
+import de.patricksteinert.recognizer.camera.WebcamReader;
 import org.apache.commons.lang3.SystemUtils;
 import org.bytedeco.opencv.opencv_core.IplImage;
 

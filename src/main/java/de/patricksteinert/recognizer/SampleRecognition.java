@@ -1,7 +1,6 @@
 package de.patricksteinert.recognizer;
 
 import com.srgroup.tfobj.detectors.Classifier;
-//import com.srgroup.tfobj.detectors.TFObjectDetector;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter;
@@ -16,7 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Sample recognition uses the TensorFlow ssd_mobilenet_v2_coco net to recognize objects.
+ * <p>
  * Created by Patrick Steinert on 19.07.21.
+ *
+ * @author Patrick Steinert
+ * @since 1.0
  */
 public class SampleRecognition implements Recognition {
 

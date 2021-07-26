@@ -1,5 +1,6 @@
-package de.patricksteinert.recognizer;
+package de.patricksteinert.recognizer.camera;
 
+import de.patricksteinert.recognizer.camera.WebcamReader;
 import org.bytedeco.javacv.*;
 import org.bytedeco.opencv.opencv_core.IplImage;
 
