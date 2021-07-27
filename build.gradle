@@ -31,11 +31,16 @@ jar {
 
 javafx {
     version = "11"
-    modules = [ 'javafx.controls' ]
+    modules = ['javafx.controls']
 }
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
+
+
 }
 
 dependencies {
@@ -46,6 +51,7 @@ dependencies {
     implementation "org.deeplearning4j:deeplearning4j-core:1.0.0-M1.1"
     implementation "org.nd4j:nd4j-native-platform:1.0.0-M1.1"
 
+    implementation files('libs/gmaf-0.0.1-SNAPSHOT.jar')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
@@ -61,5 +67,16 @@ task fatJar(type: Jar) {
     }
     archiveBaseName = "${rootProject.name}"
     from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'de.patricksteinert'
+            artifactId = 'recognizer2'
+            version = '1.0'
+
+            from components.java
+        }
+    }
 }
