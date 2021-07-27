@@ -22,8 +22,8 @@ public class Result {
     /**
      * Default constructor for immuntable
      *
-     * @param objectClass
-     * @param confidence
+     * @param objectClass the class of the object
+     * @param confidence the confidence level for the objetcs class
      */
     public Result(String objectClass, double confidence) {
         this.objectClass = objectClass;
