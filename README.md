@@ -16,7 +16,21 @@ The created jar with dependencies will be created at `build/libs`
 
 ## Download the model files
 
-...
+There are two model packages necessary for the project.
+
+* ssd_mobilenet_v2_coco_2018_03_29 (by TensorFlow)
+* yolo_v3_fruits360_2021_07_23_4 (self-generated)
+
+You can download and unzip the models with the following commands. 
+Download them in the project directory.
+
+```
+wget https://www.patricksteinert.de/stuff/ssd_mobilenet_v2_coco_2018_03_29.zip
+unzip ssd_mobilenet_v2_coco_2018_03_29.zip
+
+wget https://www.patricksteinert.de/stuff/yolo_v3_fruits360_2021_07_23_4.zip
+unzip yolo_v3_fruits360_2021_07_23_4.zip
+```
 
 
 ## Standalone application
