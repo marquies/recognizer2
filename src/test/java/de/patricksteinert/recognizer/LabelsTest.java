@@ -6,7 +6,6 @@ import java.io.*;
 import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by Patrick Steinert on 20.07.21.
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class LabelsTest {
 
     @Test
-    public void testLabels() throws Exception {
+    public void testCocoLabelsFileForCorrectIndexing() throws Exception {
         Vector<String> labels = new Vector<>();
         InputStream labelsInput = new FileInputStream(new File("./coco_labels.txt"));
         try (BufferedReader br = new BufferedReader(new InputStreamReader(labelsInput))) {
@@ -25,7 +24,6 @@ public class LabelsTest {
                 labels.add(line);
             }
         }
-//        assertTrue(labels.get(0).equals("Person"));
         assertEquals("person", labels.get(1));
     }
 

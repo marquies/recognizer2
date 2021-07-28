@@ -37,6 +37,8 @@ unzip yolo_v3_fruits360_2021_07_23_4.zip
 
 To execute the application as standalone, create a jar with all the dependencies.
 
+***Note for macOS users**: due to security settings, you have to allow camera access and restart the application*
+
 > gradle fatJar
 
 Executue with ``java -jar libs/recognizer2-VERSION.jar``
