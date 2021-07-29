@@ -3,6 +3,7 @@ package de.patricksteinert.recognizer;
 import de.patricksteinert.recognizer.camera.GenericWebcamReader;
 import de.patricksteinert.recognizer.camera.RaspberryPiWebcamReader;
 import de.patricksteinert.recognizer.camera.WebcamReader;
+import de.patricksteinert.recognizer.util.FakeRecognition;
 import org.apache.commons.lang3.SystemUtils;
 import org.bytedeco.opencv.opencv_core.IplImage;
 
@@ -24,6 +25,9 @@ import static org.bytedeco.opencv.helper.opencv_imgcodecs.cvSaveImage;
  */
 public class Recognizer implements PropertyChangeListener {
 
+
+    public static final String RECOGNIZER_METHOD_ENV = "RECOGNIZER_METHOD";
+    public static final String TMP_IMAGE_FOLDER = "/tmp/images";
     private WeightChecker weightChecker;
     private WebcamReader webcamReader;
     private Preprocessor preprocessor;
@@ -39,12 +43,36 @@ public class Recognizer implements PropertyChangeListener {
 
         // Initialization of the application components.
 
+        File f = new File(TMP_IMAGE_FOLDER);
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+
         display = new Display();
 
-        // Fake recognition is used for development purposes.
-        //recognition = new FakeRecognition();
-        //recognition = new SampleRecognition();
-        recognition = new YoloRecognition();
+        String method = null;
+        if (System.getenv(RECOGNIZER_METHOD_ENV) != null) {
+            method = System.getenv(RECOGNIZER_METHOD_ENV);
+            System.out.println("Method '" + method + "' has been initialized from environment variable.");
+        } else {
+            method = "fake";
+            System.out.println("No environment variable " + RECOGNIZER_METHOD_ENV + "  - " +
+                    "Method '" + method
+                    + "' has been used automatically. You can set the variable with values fake, ssd_mobilenet or yolov3");
+        }
+
+        switch (method) {
+            case "fake":
+                recognition = new FakeRecognition();
+                break;
+            case "ssd_mobilenet":
+                recognition = new SampleRecognition();
+                break;
+            case "yolov3":
+                recognition = new YoloRecognition();
+                break;
+        }
+
 
         preprocessor = new Preprocessor();
 
@@ -93,7 +121,7 @@ public class Recognizer implements PropertyChangeListener {
         IplImage preparedImg = preprocessor.preprocess(img);
 
         // Store for validation purposes
-        cvSaveImage("/tmp/images" + File.separator + (2) + "-aa.jpg", preparedImg);
+        cvSaveImage(TMP_IMAGE_FOLDER + File.separator + (2) + "-aa.jpg", preparedImg);
 
         // 3. Run object recognition
         List<Result> results = recognition.recognize(preparedImg);

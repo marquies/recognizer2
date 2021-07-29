@@ -91,7 +91,7 @@ size=100
 model = keras.models.load_model('./yolo_v3_fruits360_2021_07_23_4/saved_model')
 
 
-img_raw = tf.image.decode_jpeg(open("./images/2-aa.jpg", 'rb').read(), channels=3)
+img_raw = tf.image.decode_jpeg(open("/tmp/images/2-aa.jpg", 'rb').read(), channels=3)
 
 
 img = tf.expand_dims(img_raw, 0)
@@ -100,7 +100,7 @@ img = transform_images(img, size)
 boxes, scores, classes, nums = model(img)
 
 
-class_names = [c.strip() for c in open('./yolo_v3_fruits360_2021_07_23_4/fruits360.names').readlines()]
+class_names = [c.strip() for c in open('./fruits360.names').readlines()]
 
 
 for i in range(nums[0]):
@@ -111,7 +111,7 @@ for i in range(nums[0]):
 
 img = cv2.cvtColor(img_raw.numpy(), cv2.COLOR_RGB2BGR)
 img = draw_outputs(img, (boxes, scores, classes, nums), class_names)
-cv2.imwrite('output.jpg', img)
+cv2.imwrite('/tmp/images/output.jpg', img)
 
 
 

@@ -30,8 +30,9 @@ public class YoloRecognition implements Recognition {
 //        y.inference("./images/2-aa.jpg");
         Result r = executePythonInference();
         List<Result> results = new Vector();
-        results.add(r);
-
+        if (r != null) {
+            results.add(r);
+        }
         return results;
     }
 
@@ -60,18 +61,20 @@ public class YoloRecognition implements Recognition {
                 System.out.println("*" + s + "*");
                 result += s;
             }
-            String[] resultParts = result.split(",");
-            String label = resultParts[0];
-            Double score = Double.valueOf(resultParts[1]);
-            r = new Result(label, score);
+            if (result.length() != 0) {
+                String[] resultParts = result.split(",");
+                String label = resultParts[0];
+                Double score = Double.valueOf(resultParts[1]);
+                r = new Result(label, score);
 
 
-            String[] boxDim = resultParts[2].stripLeading().stripTrailing().split(" ");
+                String[] boxDim = resultParts[2].stripLeading().stripTrailing().split(" ");
 
 
-            System.out.println("Here is the standard output of the command:\n");
-            while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
+                System.out.println("Here is the standard error of the command:\n");
+                while ((s = stdError.readLine()) != null) {
+                    System.out.println(s);
+                }
             }
 
         } catch (IOException e) {

@@ -53,7 +53,7 @@ public class Preprocessor {
         output.release();
 
 
-        imwrite("/tmp/images" + File.separator + (1) + "-aa.jpg", dest);
+        imwrite(Recognizer.TMP_IMAGE_FOLDER + File.separator + (1) + "-aa.jpg", dest);
         //cvSaveImage("images" + File.separator + (1) + "-aa.jpg", output);
         // Define output image
 

@@ -1,6 +1,9 @@
 package de.patricksteinert.recognizer.yolov3;
 
 import org.deeplearning4j.nn.graph.ComputationGraph;
+import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
+import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
+import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.tensorflow.Graph;
@@ -20,7 +23,15 @@ public class Yolov3 {
 
     public Yolov3() {
 
-        //model = KerasModelImport.importKerasModelAndWeights("./yolo_v3_fruits360_2021_07_23_4/yolo_model_export.h5", false);
+        try {
+            model = KerasModelImport.importKerasModelAndWeights("./yolo_v3_fruits360_2021_07_23_4/yolo_model_export.h5", false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UnsupportedKerasConfigurationException e) {
+            e.printStackTrace();
+        } catch (InvalidKerasConfigurationException e) {
+            e.printStackTrace();
+        }
 
         try (Graph graph = new Graph()) {
             //graph.importGraphDef(Files.readAllBytes(Paths.get("./yolo_v3_fruits360_2021_07_23_4/saved_model/saved_model.pb")));

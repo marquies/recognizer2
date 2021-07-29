@@ -1,5 +1,6 @@
 package de.patricksteinert.recognizer.camera;
 
+import de.patricksteinert.recognizer.Recognizer;
 import de.patricksteinert.recognizer.camera.WebcamReader;
 import org.bytedeco.javacv.*;
 import org.bytedeco.opencv.opencv_core.IplImage;
@@ -40,7 +41,7 @@ public class GenericWebcamReader implements WebcamReader {
             cvFlip(img, img, 1);// l-r = 90_degrees_steps_anti_clockwise
 
             //save
-            cvSaveImage("images" + File.separator + (0) + "-aa.jpg", img);
+            cvSaveImage(Recognizer.TMP_IMAGE_FOLDER + File.separator + (0) + "-aa.jpg", img);
 
             //canvas.showImage(converter.convert(img));
 
