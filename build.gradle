@@ -65,8 +65,16 @@ task fatJar(type: Jar) {
     manifest {
         attributes 'Main-Class': "${mainClassName}"
     }
-    archiveBaseName = "${rootProject.name}-with-dependencies"
-    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    archiveBaseName = "${rootProject.name}"
+    from {
+        configurations.compileClasspath.collect {
+
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+
+    with jar
+
     from(sourceSets.main.output) {
         // filter to only include certain class files (Ant glob pattern)
         include "ssd_mobilenet_v2_coco_2018_03_29"
@@ -74,7 +82,6 @@ task fatJar(type: Jar) {
         include "coco_labels.txt"
         include "fruits360.names"
     }
-
 
 
 }

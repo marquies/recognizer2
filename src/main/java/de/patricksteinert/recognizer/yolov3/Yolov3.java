@@ -24,7 +24,7 @@ public class Yolov3 {
     public Yolov3() {
 
         try {
-            model = KerasModelImport.importKerasModelAndWeights("./yolo_v3_fruits360_2021_07_23_4/yolo_model_export.h5", false);
+            model = KerasModelImport.importKerasModelAndWeights("yolo_v3_fruits360_2021_07_23_4/yolo_model_export.h5", false);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (UnsupportedKerasConfigurationException e) {
