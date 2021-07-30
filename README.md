@@ -54,7 +54,7 @@ one of the following values:
 * yolo_v3 (uses the transer-learned YoloV3 net)
 
 
-Execute with ```java -jar libs/recognizer2-VERSION.jar```
+Execute with ```java -jar build/libs/recognizer2-VERSION.jar```
 
 ## Use in the GMAF Framework
 
