@@ -12,24 +12,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
+import org.tensorflow.*;
+import org.tensorflow.types.UInt8;
+
+import java.nio.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.tensorflow.Graph;
-import org.tensorflow.Operation;
-import org.tensorflow.Session;
-import org.tensorflow.Tensor;
-import org.tensorflow.TensorFlow;
-import org.tensorflow.Tensors;
-import org.tensorflow.types.UInt8;
 
 /**
  * Wrapper over the TensorFlow API ({@link Graph}, {@link Session}) providing a smaller API surface
@@ -39,6 +27,21 @@ import org.tensorflow.types.UInt8;
  * example usage.
  */
 public class TensorFlowInferenceInterface {
+
+    // Immutable state.
+    private final String modelName;
+    private final Graph g;
+    private final Session sess;
+    // State reset on every call to run.
+    private Session.Runner runner;
+    private List<String> feedNames = new ArrayList<String>();
+    private List<Tensor<?>> feedTensors = new ArrayList<Tensor<?>>();
+    private List<String> fetchNames = new ArrayList<String>();
+    private List<Tensor<?>> fetchTensors = new ArrayList<Tensor<?>>();
+    // Mutable state.
+    private RunStats runStats;
+
+    // Methods for taking a native Tensor and filling it with values from Java arrays.
 
     /*
      * Load a TensorFlow model from the AssetManager or from disk if it is not an asset file.
@@ -121,7 +124,9 @@ public class TensorFlowInferenceInterface {
         }
     }
 
-    /** Returns a reference to the Graph describing the computation run during inference. */
+    /**
+     * Returns a reference to the Graph describing the computation run during inference.
+     */
     public Graph graph() {
         return g;
     }
@@ -135,7 +140,9 @@ public class TensorFlowInferenceInterface {
         return operation;
     }
 
-    /** Returns the last stat summary string if logging is enabled. */
+    /**
+     * Returns the last stat summary string if logging is enabled.
+     */
     public String getStatString() {
         return (runStats == null) ? "" : runStats.summary();
     }
@@ -165,12 +172,13 @@ public class TensorFlowInferenceInterface {
         }
     }
 
-    // Methods for taking a native Tensor and filling it with values from Java arrays.
+
+    // Methods for taking a native Tensor and filling it with src from Java native IO buffers.
 
     /**
-     * Given a source array with shape {@link dims} and content {@link src}, copy the contents into
-     * the input Tensor with name {@link inputName}. The source array {@link src} must have at least
-     * as many elements as that of the destination Tensor. If {@link src} has more elements than the
+     * Given a source array with shape dims and content src, copy the contents into
+     * the input Tensor with name inputName. The source array src must have at least
+     * as many elements as that of the destination Tensor. If src has more elements than the
      * destination has capacity, the copy is truncated.
      */
     public void feed(String inputName, boolean[] src, long... dims) {
@@ -184,9 +192,9 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Given a source array with shape {@link dims} and content {@link src}, copy the contents into
-     * the input Tensor with name {@link inputName}. The source array {@link src} must have at least
-     * as many elements as that of the destination Tensor. If {@link src} has more elements than the
+     * Given a source array with shape dims and content src, copy the contents into
+     * the input Tensor with name inputName. The source array src must have at least
+     * as many elements as that of the destination Tensor. If src has more elements than the
      * destination has capacity, the copy is truncated.
      */
     public void feed(String inputName, float[] src, long... dims) {
@@ -194,9 +202,9 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Given a source array with shape {@link dims} and content {@link src}, copy the contents into
-     * the input Tensor with name {@link inputName}. The source array {@link src} must have at least
-     * as many elements as that of the destination Tensor. If {@link src} has more elements than the
+     * Given a source array with shape dims and content src, copy the contents into
+     * the input Tensor with name inputName. The source array src must have at least
+     * as many elements as that of the destination Tensor. If src has more elements than the
      * destination has capacity, the copy is truncated.
      */
     public void feed(String inputName, int[] src, long... dims) {
@@ -204,9 +212,9 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Given a source array with shape {@link dims} and content {@link src}, copy the contents into
-     * the input Tensor with name {@link inputName}. The source array {@link src} must have at least
-     * as many elements as that of the destination Tensor. If {@link src} has more elements than the
+     * Given a source array with shape dims and content src, copy the contents into
+     * the input Tensor with name inputName. The source array src must have at least
+     * as many elements as that of the destination Tensor. If src has more elements than the
      * destination has capacity, the copy is truncated.
      */
     public void feed(String inputName, long[] src, long... dims) {
@@ -214,9 +222,9 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Given a source array with shape {@link dims} and content {@link src}, copy the contents into
-     * the input Tensor with name {@link inputName}. The source array {@link src} must have at least
-     * as many elements as that of the destination Tensor. If {@link src} has more elements than the
+     * Given a source array with shape dims and content src, copy the contents into
+     * the input Tensor with name inputName. The source array src must have at least
+     * as many elements as that of the destination Tensor. If src has more elements than the
      * destination has capacity, the copy is truncated.
      */
     public void feed(String inputName, double[] src, long... dims) {
@@ -224,9 +232,9 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Given a source array with shape {@link dims} and content {@link src}, copy the contents into
-     * the input Tensor with name {@link inputName}. The source array {@link src} must have at least
-     * as many elements as that of the destination Tensor. If {@link src} has more elements than the
+     * Given a source array with shape dims and content src, copy the contents into
+     * the input Tensor with name inputName. The source array src must have at least
+     * as many elements as that of the destination Tensor. If src has more elements than the
      * destination has capacity, the copy is truncated.
      */
     public void feed(String inputName, byte[] src, long... dims) {
@@ -234,7 +242,7 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Copy a byte sequence into the input Tensor with name {@link inputName} as a string-valued
+     * Copy a byte sequence into the input Tensor with name inputName as a string-valued
      * scalar tensor. In the TensorFlow type system, a "string" is an arbitrary sequence of bytes, not
      * a Java {@code String} (which is a sequence of characters).
      */
@@ -243,7 +251,7 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Copy an array of byte sequences into the input Tensor with name {@link inputName} as a
+     * Copy an array of byte sequences into the input Tensor with name inputName as a
      * string-valued one-dimensional tensor (vector). In the TensorFlow type system, a "string" is an
      * arbitrary sequence of bytes, not a Java {@code String} (which is a sequence of characters).
      */
@@ -252,7 +260,7 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Copy an array of byte sequences into the input Tensor with name {@link inputName} as a
+     * Copy an array of byte sequences into the input Tensor with name inputName as a
      * string-valued one-dimensional tensor (vector). In the TensorFlow type system, a "string" is an
      * arbitrary sequence of bytes, not a Java {@code String} (which is a sequence of characters).
      */
@@ -260,14 +268,11 @@ public class TensorFlowInferenceInterface {
         addFeed(inputName, Tensor.create(src, UInt8.class));
     }
 
-
-    // Methods for taking a native Tensor and filling it with src from Java native IO buffers.
-
     /**
-     * Given a source buffer with shape {@link dims} and content {@link src}, both stored as
+     * Given a source buffer with shape dims and content src, both stored as
      * <b>direct</b> and <b>native ordered</b> java.nio buffers, copy the contents into the input
-     * Tensor with name {@link inputName}. The source buffer {@link src} must have at least as many
-     * elements as that of the destination Tensor. If {@link src} has more elements than the
+     * Tensor with name inputName. The source buffer src must have at least as many
+     * elements as that of the destination Tensor. If src has more elements than the
      * destination has capacity, the copy is truncated.
      */
     public void feed(String inputName, FloatBuffer src, long... dims) {
@@ -275,10 +280,10 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Given a source buffer with shape {@link dims} and content {@link src}, both stored as
+     * Given a source buffer with shape dims and content src, both stored as
      * <b>direct</b> and <b>native ordered</b> java.nio buffers, copy the contents into the input
-     * Tensor with name {@link inputName}. The source buffer {@link src} must have at least as many
-     * elements as that of the destination Tensor. If {@link src} has more elements than the
+     * Tensor with name inputName. The source buffer src must have at least as many
+     * elements as that of the destination Tensor. If src has more elements than the
      * destination has capacity, the copy is truncated.
      */
     public void feed(String inputName, IntBuffer src, long... dims) {
@@ -286,10 +291,10 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Given a source buffer with shape {@link dims} and content {@link src}, both stored as
+     * Given a source buffer with shape dims and content src, both stored as
      * <b>direct</b> and <b>native ordered</b> java.nio buffers, copy the contents into the input
-     * Tensor with name {@link inputName}. The source buffer {@link src} must have at least as many
-     * elements as that of the destination Tensor. If {@link src} has more elements than the
+     * Tensor with name inputName. The source buffer src must have at least as many
+     * elements as that of the destination Tensor. If src has more elements than the
      * destination has capacity, the copy is truncated.
      */
     public void feed(String inputName, LongBuffer src, long... dims) {
@@ -297,10 +302,10 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Given a source buffer with shape {@link dims} and content {@link src}, both stored as
+     * Given a source buffer with shape dims and content src, both stored as
      * <b>direct</b> and <b>native ordered</b> java.nio buffers, copy the contents into the input
-     * Tensor with name {@link inputName}. The source buffer {@link src} must have at least as many
-     * elements as that of the destination Tensor. If {@link src} has more elements than the
+     * Tensor with name inputName. The source buffer src must have at least as many
+     * elements as that of the destination Tensor. If src has more elements than the
      * destination has capacity, the copy is truncated.
      */
     public void feed(String inputName, DoubleBuffer src, long... dims) {
@@ -308,10 +313,10 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Given a source buffer with shape {@link dims} and content {@link src}, both stored as
+     * Given a source buffer with shape dims and content src, both stored as
      * <b>direct</b> and <b>native ordered</b> java.nio buffers, copy the contents into the input
-     * Tensor with name {@link inputName}. The source buffer {@link src} must have at least as many
-     * elements as that of the destination Tensor. If {@link src} has more elements than the
+     * Tensor with name inputName. The source buffer src must have at least as many
+     * elements as that of the destination Tensor. If src has more elements than the
      * destination has capacity, the copy is truncated.
      */
     public void feed(String inputName, ByteBuffer src, long... dims) {
@@ -319,8 +324,8 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Read from a Tensor named {@link outputName} and copy the contents into a Java array. {@link
-     * dst} must have length greater than or equal to that of the source Tensor. This operation will
+     * Read from a Tensor named outputName and copy the contents into a Java array.  
+     * dst must have length greater than or equal to that of the source Tensor. This operation will
      * not affect dst's content past the source Tensor's size.
      */
     public void fetch(String outputName, float[] dst) {
@@ -328,8 +333,8 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Read from a Tensor named {@link outputName} and copy the contents into a Java array. {@link
-     * dst} must have length greater than or equal to that of the source Tensor. This operation will
+     * Read from a Tensor named outputName and copy the contents into a Java array. 
+     * dst must have length greater than or equal to that of the source Tensor. This operation will
      * not affect dst's content past the source Tensor's size.
      */
     public void fetch(String outputName, int[] dst) {
@@ -337,8 +342,8 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Read from a Tensor named {@link outputName} and copy the contents into a Java array. {@link
-     * dst} must have length greater than or equal to that of the source Tensor. This operation will
+     * Read from a Tensor named outputName and copy the contents into a Java array. 
+     * dst must have length greater than or equal to that of the source Tensor. This operation will
      * not affect dst's content past the source Tensor's size.
      */
     public void fetch(String outputName, long[] dst) {
@@ -346,8 +351,8 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Read from a Tensor named {@link outputName} and copy the contents into a Java array. {@link
-     * dst} must have length greater than or equal to that of the source Tensor. This operation will
+     * Read from a Tensor named outputName and copy the contents into a Java array. 
+     * dst must have length greater than or equal to that of the source Tensor. This operation will
      * not affect dst's content past the source Tensor's size.
      */
     public void fetch(String outputName, double[] dst) {
@@ -355,8 +360,8 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Read from a Tensor named {@link outputName} and copy the contents into a Java array. {@link
-     * dst} must have length greater than or equal to that of the source Tensor. This operation will
+     * Read from a Tensor named outputName and copy the contents into a Java array. 
+     * dst must have length greater than or equal to that of the source Tensor. This operation will
      * not affect dst's content past the source Tensor's size.
      */
     public void fetch(String outputName, byte[] dst) {
@@ -364,8 +369,8 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Read from a Tensor named {@link outputName} and copy the contents into the <b>direct</b> and
-     * <b>native ordered</b> java.nio buffer {@link dst}. {@link dst} must have capacity greater than
+     * Read from a Tensor named outputName and copy the contents into the <b>direct</b> and
+     * <b>native ordered</b> java.nio buffer dst. dst must have capacity greater than
      * or equal to that of the source Tensor. This operation will not affect dst's content past the
      * source Tensor's size.
      */
@@ -374,8 +379,8 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Read from a Tensor named {@link outputName} and copy the contents into the <b>direct</b> and
-     * <b>native ordered</b> java.nio buffer {@link dst}. {@link dst} must have capacity greater than
+     * Read from a Tensor named outputName and copy the contents into the <b>direct</b> and
+     * <b>native ordered</b> java.nio buffer dst. dst must have capacity greater than
      * or equal to that of the source Tensor. This operation will not affect dst's content past the
      * source Tensor's size.
      */
@@ -384,8 +389,8 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Read from a Tensor named {@link outputName} and copy the contents into the <b>direct</b> and
-     * <b>native ordered</b> java.nio buffer {@link dst}. {@link dst} must have capacity greater than
+     * Read from a Tensor named outputName and copy the contents into the <b>direct</b> and
+     * <b>native ordered</b> java.nio buffer dst. dst must have capacity greater than
      * or equal to that of the source Tensor. This operation will not affect dst's content past the
      * source Tensor's size.
      */
@@ -394,8 +399,8 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Read from a Tensor named {@link outputName} and copy the contents into the <b>direct</b> and
-     * <b>native ordered</b> java.nio buffer {@link dst}. {@link dst} must have capacity greater than
+     * Read from a Tensor named  outputName and copy the contents into the <b>direct</b> and
+     * <b>native ordered</b> java.nio buffer dst. dst must have capacity greater than
      * or equal to that of the source Tensor. This operation will not affect dst's content past the
      * source Tensor's size.
      */
@@ -404,8 +409,8 @@ public class TensorFlowInferenceInterface {
     }
 
     /**
-     * Read from a Tensor named {@link outputName} and copy the contents into the <b>direct</b> and
-     * <b>native ordered</b> java.nio buffer {@link dst}. {@link dst} must have capacity greater than
+     * Read from a Tensor named outputName and copy the contents into the <b>direct</b> and
+     * <b>native ordered</b> java.nio buffer dst. dst must have capacity greater than
      * or equal to that of the source Tensor. This operation will not affect dst's content past the
      * source Tensor's size.
      */
@@ -413,39 +418,12 @@ public class TensorFlowInferenceInterface {
         getTensor(outputName).writeTo(dst);
     }
 
-
     private void addFeed(String inputName, Tensor<?> t) {
         // The string format accepted by TensorFlowInferenceInterface is node_name[:output_index].
         TensorId tid = TensorId.parse(inputName);
         runner.feed(tid.name, tid.outputIndex, t);
         feedNames.add(inputName);
         feedTensors.add(t);
-    }
-
-    private static class TensorId {
-        String name;
-        int outputIndex;
-
-        // Parse output names into a TensorId.
-        //
-        // E.g., "foo" --> ("foo", 0), while "foo:1" --> ("foo", 1)
-        public static TensorId parse(String name) {
-            TensorId tid = new TensorId();
-            int colonIndex = name.lastIndexOf(':');
-            if (colonIndex < 0) {
-                tid.outputIndex = 0;
-                tid.name = name;
-                return tid;
-            }
-            try {
-                tid.outputIndex = Integer.parseInt(name.substring(colonIndex + 1));
-                tid.name = name.substring(0, colonIndex);
-            } catch (NumberFormatException e) {
-                tid.outputIndex = 0;
-                tid.name = name;
-            }
-            return tid;
-        }
     }
 
     private Tensor<?> getTensor(String outputName) {
@@ -476,18 +454,29 @@ public class TensorFlowInferenceInterface {
         fetchNames.clear();
     }
 
-    // Immutable state.
-    private final String modelName;
-    private final Graph g;
-    private final Session sess;
+    private static class TensorId {
+        String name;
+        int outputIndex;
 
-    // State reset on every call to run.
-    private Session.Runner runner;
-    private List<String> feedNames = new ArrayList<String>();
-    private List<Tensor<?>> feedTensors = new ArrayList<Tensor<?>>();
-    private List<String> fetchNames = new ArrayList<String>();
-    private List<Tensor<?>> fetchTensors = new ArrayList<Tensor<?>>();
-
-    // Mutable state.
-    private RunStats runStats;
+        // Parse output names into a TensorId.
+        //
+        // E.g., "foo" --> ("foo", 0), while "foo:1" --> ("foo", 1)
+        public static TensorId parse(String name) {
+            TensorId tid = new TensorId();
+            int colonIndex = name.lastIndexOf(':');
+            if (colonIndex < 0) {
+                tid.outputIndex = 0;
+                tid.name = name;
+                return tid;
+            }
+            try {
+                tid.outputIndex = Integer.parseInt(name.substring(colonIndex + 1));
+                tid.name = name.substring(0, colonIndex);
+            } catch (NumberFormatException e) {
+                tid.outputIndex = 0;
+                tid.name = name;
+            }
+            return tid;
+        }
+    }
 }

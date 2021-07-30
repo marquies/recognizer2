@@ -47,6 +47,8 @@ public class TFObjectDetector implements Classifier {
      *
      * @param modelFilePath The filepath of the model GraphDef protocol buffer.
      * @param labelFilePath The filepath of label file for classes.
+     * @return a Classifier object
+     * @throws IOException if files are not present of malformed
      */
     public static Classifier create(
             final String modelFilePath,

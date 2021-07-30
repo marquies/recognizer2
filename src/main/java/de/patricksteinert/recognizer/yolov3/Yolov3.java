@@ -16,14 +16,20 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
+ * Model class for the trained Keras model.
+ * <p>
  * Created by Patrick Steinert on 23.07.21.
  */
 public class Yolov3 {
     private ComputationGraph model;
 
+    /**
+     * Default constructor imports the model.
+     */
     public Yolov3() {
 
         try {
+            // does not work, open issue at https://github.com/eclipse/deeplearning4j/issues/9398
             model = KerasModelImport.importKerasModelAndWeights("yolo_v3_fruits360_2021_07_23_4/yolo_model_export.h5", false);
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,19 +47,13 @@ public class Yolov3 {
 
     }
 
-    public byte[] getGraph() {
-        return null;
-    }
-
-    public void inference(String imagePath) {
-        try {
-            predict(imagePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
+    /**
+     * Recognizes objects for files.
+     *
+     * @param filepath path to the file to process.
+     * @return object with the recognized object information.
+     * @throws IOException in case of trouble reading the file.
+     */
     public INDArray predict(String filepath) throws IOException {
         File file = new File(filepath);
         if (!file.exists()) {
