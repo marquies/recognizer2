@@ -44,7 +44,7 @@ To execute the application as standalone, create a jar with all the dependencies
 ***Note for macOS users**: due to security settings, you have to allow camera access and restart the application*
 
 ```
-gradle fatJar
+gradle jar
 ```
 
 To configure the selected recognition method you need to either set the environment variable 'RECOGNIZER_METHOD' to
