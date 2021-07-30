@@ -51,7 +51,7 @@ To configure the selected recognition method you need to set the environment var
 one of the following values:
 * fake (recognizes class "unclassified" with 99.9 confidence)
 * ssd_mobilenet (uses default tensorflow ssd_mobilenet)
-* yolo_v3 (uses the transer-learned YoloV3 net)
+* yolo_v3 (uses the transfer-learned YoloV3 net)
 
 
 Execute with ```java -jar build/libs/recognizer2-VERSION.jar```
