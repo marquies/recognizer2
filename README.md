@@ -47,7 +47,7 @@ To execute the application as standalone, create a jar with all the dependencies
 gradle jar
 ```
 
-To configure the selected recognition method you need to either set the environment variable 'RECOGNIZER_METHOD' to
+To configure the selected recognition method you need to set the environment variable 'RECOGNIZER_METHOD' to
 one of the following values:
 * fake (recognizes class "unclassified" with 99.9 confidence)
 * ssd_mobilenet (uses default tensorflow ssd_mobilenet)
