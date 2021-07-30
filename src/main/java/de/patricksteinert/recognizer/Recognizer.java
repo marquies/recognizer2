@@ -71,6 +71,9 @@ public class Recognizer implements PropertyChangeListener {
             case "yolov3":
                 recognition = new YoloRecognition();
                 break;
+            default:
+                System.out.println("Unknown recognition method '" + method + "'");
+                System.exit(9);
         }
 
 
