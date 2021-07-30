@@ -10,7 +10,7 @@ plugins {
 
 group 'de.patricksteinert'
 //name 'recognizer2'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 sourceCompatibility = 11
 targetCompatibility = 11
