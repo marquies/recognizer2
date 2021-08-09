@@ -29,6 +29,8 @@ public class Yolov3 {
     public Yolov3() {
 
         try {
+            
+
             // does not work, open issue at https://github.com/eclipse/deeplearning4j/issues/9398
             model = KerasModelImport.importKerasModelAndWeights("yolo_v3_fruits360_2021_07_23_4/yolo_model_export.h5", false);
         } catch (IOException e) {
