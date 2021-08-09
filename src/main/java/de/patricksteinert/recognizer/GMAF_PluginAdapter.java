@@ -3,6 +3,7 @@ package de.patricksteinert.recognizer;
 import de.patricksteinert.recognizer.Recognition;
 import de.patricksteinert.recognizer.Result;
 import de.patricksteinert.recognizer.SampleRecognition;
+import de.patricksteinert.recognizer.util.FakeRecognition;
 import de.swa.gmaf.plugin.GMAF_Plugin;
 import de.swa.mmfg.MMFG;
 import de.swa.mmfg.Node;
@@ -13,6 +14,7 @@ import org.bytedeco.opencv.opencv_core.IplImage;
 import org.bytedeco.opencv.opencv_core.Mat;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
@@ -64,7 +66,36 @@ public class GMAF_PluginAdapter implements GMAF_Plugin {
     @Override
     public void process(URL url, File file, byte[] bytes, MMFG mmfg) {
         // Read File
-        this.recognition = new SampleRecognition();
+        String method = null;
+        if (System.getenv(Recognizer.RECOGNIZER_METHOD_ENV) != null) {
+            method = System.getenv(Recognizer.RECOGNIZER_METHOD_ENV);
+            System.out.println("Method '" + method + "' has been initialized from environment variable.");
+        } else {
+            method = "fake";
+            System.out.println("No environment variable " + Recognizer.RECOGNIZER_METHOD_ENV + "  - " +
+                    "Method '" + method
+                    + "' has been used automatically. You can set the variable with values fake, ssd_mobilenet or yolov3");
+        }
+
+        switch (method) {
+            case "fake":
+                recognition = new FakeRecognition();
+                break;
+            case "ssd_mobilenet":
+                try {
+                    recognition = new SampleRecognition();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.exit(3);
+                }
+                break;
+            case "yolov3":
+                recognition = new YoloRecognition();
+                break;
+            default:
+                System.out.println("Unknown recognition method '" + method + "'");
+                System.exit(9);
+        }
 
         System.out.println(file.getAbsolutePath());
         Mat image = imread(file.getAbsolutePath());

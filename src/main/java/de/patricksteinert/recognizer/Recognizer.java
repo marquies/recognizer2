@@ -71,7 +71,7 @@ public class Recognizer implements PropertyChangeListener {
                     recognition = new SampleRecognition();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    System.exit(-3);
+                    System.exit(3);
                 }
                 break;
             case "yolov3":
