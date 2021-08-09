@@ -25,6 +25,18 @@ import java.util.List;
  */
 public class SampleRecognition implements Recognition {
 
+    private final Classifier classifier;
+
+    public SampleRecognition() throws IOException {
+        String modelFilePath = "./ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb";
+
+        String labelMapFilePath = "./coco_labels.txt";
+
+
+        classifier = TFObjectDetector.create(modelFilePath, labelMapFilePath);
+
+    }
+
     public static BufferedImage IplImageToBufferedImage(IplImage src) {
         OpenCVFrameConverter.ToIplImage grabberConverter = new OpenCVFrameConverter.ToIplImage();
         Java2DFrameConverter paintConverter = new Java2DFrameConverter();
@@ -59,29 +71,22 @@ public class SampleRecognition implements Recognition {
     }
 
     @Override
-    public List<Result> recognize(IplImage image)  {
+    public List<Result> recognize(IplImage image) {
 
-        String modelFilePath = "./ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb";
-
-        String labelMapFilePath = "./coco_labels.txt";
-
-        String outputImageFilePath = "out.jpg";
+        String outputImageFilePath = Recognizer.TMP_IMAGE_FOLDER + File.separator + (3) + "-aa.jpg";
 
         List<Result> results = new ArrayList<>();
+//            BufferedImage image = ImageIO.read(new File(imageFilePath));
+        BufferedImage bImage = IplImageToBufferedImage(image);
+        List<Classifier.Recognition> recognitionList = classifier.recognizeImage(bImage);
+
+        for (Classifier.Recognition recognition : recognitionList) {
+            System.out.println("Title " + recognition.getTitle() + " Score " + recognition.getConfidence());
+
+            results.add(new Result(recognition.getTitle(), recognition.getConfidence()));
+        }
 
         try {
-            Classifier classifier = TFObjectDetector.create(modelFilePath, labelMapFilePath);
-
-//            BufferedImage image = ImageIO.read(new File(imageFilePath));
-            BufferedImage bImage = IplImageToBufferedImage(image);
-            List<Classifier.Recognition> recognitionList = classifier.recognizeImage(bImage);
-
-            for (Classifier.Recognition recognition : recognitionList) {
-                System.out.println("Title " + recognition.getTitle() + " Score " + recognition.getConfidence());
-
-                results.add(new Result(recognition.getTitle(), recognition.getConfidence()));
-            }
-
             saveAnnotatedImage(bImage, recognitionList, outputImageFilePath);
         } catch (IOException e) {
             e.printStackTrace();
