@@ -10,6 +10,7 @@ import org.bytedeco.opencv.opencv_core.IplImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static org.bytedeco.opencv.helper.opencv_imgcodecs.cvSaveImage;
@@ -66,7 +67,12 @@ public class Recognizer implements PropertyChangeListener {
                 recognition = new FakeRecognition();
                 break;
             case "ssd_mobilenet":
-                recognition = new SampleRecognition();
+                try {
+                    recognition = new SampleRecognition();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.exit(-3);
+                }
                 break;
             case "yolov3":
                 recognition = new YoloRecognition();

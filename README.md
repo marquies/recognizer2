@@ -4,6 +4,19 @@ The recognizer application is a prototype implementation for reasearch on fruit 
 
 ![Build](https://github.com/marquies/recognizer2/actions/workflows/gradle.yml/badge.svg)
 
+          
+## Prerequisites
+
+The application is tested on:
+* macOS 11.4
+* Ubuntu 18.04.5 LTS
+
+The following packages should be installed via the package managers (homebrew/apt).
+* Python3 (tested Ubuntu 3.6.9 & macOS 3.9.5)
+* OpenCV2 (tested Ubuntu 4.1.1 & macOS 4.5.2)
+* Java JDK 11 or newer (tested Ubuntu 11.0.11 & macOS 16.0.1)
+* Gradle 6 or 7 (tested Ubuntu 7.1.1 & macOS 7.1)
+* TensorFlow 2.5, opencv, pandas, pillow, numpy
 
 
 

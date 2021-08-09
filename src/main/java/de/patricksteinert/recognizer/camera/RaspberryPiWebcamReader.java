@@ -104,7 +104,7 @@ public class RaspberryPiWebcamReader implements WebcamReader {
 
             // run the Unix "ps -ef" command
             // using the Runtime exec method:
-            Process p = Runtime.getRuntime().exec("./listcams.py");
+            Process p = Runtime.getRuntime().exec("python3 listcams.py");
 
             BufferedReader stdInput = new BufferedReader(new
                     InputStreamReader(p.getInputStream()));
