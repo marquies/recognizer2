@@ -6,6 +6,10 @@ import de.patricksteinert.recognizer.camera.WebcamReader;
 import de.patricksteinert.recognizer.util.FakeRecognition;
 import org.apache.commons.lang3.SystemUtils;
 import org.bytedeco.opencv.opencv_core.IplImage;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
+import org.joda.time.Seconds;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -96,6 +100,8 @@ public class Recognizer implements PropertyChangeListener {
         }
         while (true) {
 
+            DateTime startTime = DateTime.now();
+
             // 1. Read an image from the camera
             IplImage img = webcamReader.readImage();
 
@@ -105,15 +111,24 @@ public class Recognizer implements PropertyChangeListener {
             // Store for validation purposes
             cvSaveImage(TMP_IMAGE_FOLDER + File.separator + (2) + "-aa.jpg", preparedImg);
 
+            DateTime intermediateTime = DateTime.now();
             // 3. Run object recognition
             List<Result> results = recognition.recognize(preparedImg);
             for (Result result : results) {
                 System.out.println("Class '" + result.getObjectClass() + "' confidence '" + result.getConfidence() + "'");
             }
+            DateTime endTime = DateTime.now();
 
+            System.out.println("---------- Recognition -----------");
             // 4. Present the recognition result on the display
             if (!results.isEmpty())
                 display.showText(results.get(0).getObjectClass());
+
+            System.out.println("---------- Statistics ------------");
+            System.out.println("Capture time: " + new Period(startTime, intermediateTime, PeriodType.millis()).getMillis());
+            System.out.println("Recognition time: " + new Period(intermediateTime, endTime, PeriodType.millis()).getMillis());
+            System.out.println("Total time: " + new Period(startTime, endTime, PeriodType.millis()).getMillis());
+            System.out.println("----------------------------------");
         }
 
 //        weightChecker = new WeightChecker();
