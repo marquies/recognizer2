@@ -94,10 +94,31 @@ public class Recognizer implements PropertyChangeListener {
             webcamReader = new GenericWebcamReader();
 
         }
+        while (true) {
 
-        weightChecker = new WeightChecker();
-        weightChecker.addPropertyChangeListener(this);
-        weightChecker.run();
+            // 1. Read an image from the camera
+            IplImage img = webcamReader.readImage();
+
+            // 2. Proprocess the image from the camera
+            IplImage preparedImg = preprocessor.preprocess(img);
+
+            // Store for validation purposes
+            cvSaveImage(TMP_IMAGE_FOLDER + File.separator + (2) + "-aa.jpg", preparedImg);
+
+            // 3. Run object recognition
+            List<Result> results = recognition.recognize(preparedImg);
+            for (Result result : results) {
+                System.out.println("Class '" + result.getObjectClass() + "' confidence '" + result.getConfidence() + "'");
+            }
+
+            // 4. Present the recognition result on the display
+            if (!results.isEmpty())
+                display.showText(results.get(0).getObjectClass());
+        }
+
+//        weightChecker = new WeightChecker();
+//        weightChecker.addPropertyChangeListener(this);
+//        weightChecker.run();
 
 
     }
