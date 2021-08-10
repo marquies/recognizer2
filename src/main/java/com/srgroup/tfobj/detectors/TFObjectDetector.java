@@ -54,6 +54,7 @@ public class TFObjectDetector implements Classifier {
             final String modelFilePath,
             final String labelFilePath) throws IOException {
         final TFObjectDetector d = new TFObjectDetector();
+            
 
 
         InputStream labelsInput = new FileInputStream(new File(labelFilePath));

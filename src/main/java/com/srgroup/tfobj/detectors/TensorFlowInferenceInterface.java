@@ -13,6 +13,8 @@ limitations under the License.
 ==============================================================================*/
 
 import org.tensorflow.*;
+import org.tensorflow.framework.ConfigProto;
+import org.tensorflow.framework.GPUOptions;
 import org.tensorflow.types.UInt8;
 
 import java.nio.*;
@@ -54,7 +56,19 @@ public class TensorFlowInferenceInterface {
         this.g = new Graph();
         g.importGraphDef(graphDef);
         this.sess = new Session(g);
+        ConfigProto config = ConfigProto.newBuilder()
+                .setGpuOptions(GPUOptions.newBuilder()
+                        .setAllowGrowth(true)
+                        .setPerProcessGpuMemoryFraction(0.04)
+                        .build()
+                ).build();
+        sess.runner()
+                .setOptions(config.toByteArray());
+                //.feed("image_tensor", input).fetch("detection_scores")
+                //.fetch("detection_classes").fetch("detection_boxes").fetch("num_detections").run();
+
         this.runner = sess.runner();
+
 
     }
 
